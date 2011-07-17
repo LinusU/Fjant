@@ -39,6 +39,13 @@ public class Fjant extends Task {
             throw new BuildException("Output attribute must be set");
         }
         
+        File[] files = findSourceFiles();
+        
+        if(!updateNeeded(files)) {
+            log("None of the files changed, processing skipped.");
+            return ;
+        }
+        
         FileOutputStream out;
         
         try {
@@ -47,7 +54,7 @@ public class Fjant extends Task {
             throw new BuildException("Output file not found");
         }
         
-        File[] files = findSourceFiles();
+        log("Processing " + files.length + " file" + (files.length > 1?"s":"") + ".");
         
         for(File file : files) {
             
@@ -95,8 +102,6 @@ public class Fjant extends Task {
             
         }
         
-        log("All done.");
-        
     }
     
     private File[] findSourceFiles() {
@@ -114,6 +119,28 @@ public class Fjant extends Task {
         }
         
         return files.toArray(new File[files.size()]);
+    }
+    
+    private boolean updateNeeded(File[] sources) {
+        
+        long lastRun = outputFile.lastModified();
+        
+        for(File file : sources) {
+            
+            long t = file.lastModified();
+            
+            if(t == 0) {
+                // File is absent
+                return true;
+            }
+            
+            if(t >= lastRun) {
+                return true;
+            }
+            
+        }
+        
+        return false;
     }
     
 }
