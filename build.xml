@@ -19,14 +19,23 @@
         <jar destfile="${bin.dir}/${ant.project.name}.jar" basedir="${classes.dir}" />
     </target>
     
-    <target name="test" description="Use the Task" depends="jar">
-        <taskdef name="fjant" classname="com.linusu.${ant.project.name}" classpath="${ant.project.name}.jar"/>
+    <target name="test.list" depends="jar">
+        <taskdef name="fjant" classname="com.linusu.${ant.project.name}" classpath="${bin.dir}/${ant.project.name}.jar"/>
         <fjant output="test.css">
-            <sources dir="test">
+            <filelist dir="test">
                 <file name="test1.css" />
                 <file name="test2.css" />
-            </sources>
+            </filelist>
         </fjant>
     </target>
+    
+    <target name="test.set" depends="jar">
+        <taskdef name="fjant" classname="com.linusu.${ant.project.name}" classpath="${bin.dir}/${ant.project.name}.jar"/>
+        <fjant output="test.css">
+            <fileset dir="test" includes="*.css" />
+        </fjant>
+    </target>
+    
+    <target name="test" description="Test the Task" depends="test.list, test.set" />
     
 </project>

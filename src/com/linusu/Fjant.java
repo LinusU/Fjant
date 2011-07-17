@@ -2,35 +2,50 @@ package com.linusu;
 
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.BuildException;
+
+import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.FileList;
+import org.apache.tools.ant.types.Resource;
+import org.apache.tools.ant.types.ResourceCollection;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 
 import java.util.List;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Fjant extends Task {
     
     private File outputFile;
-    private List<FileList> sourceFileLists;
+    private List<ResourceCollection> sourceRC;
     
     public Fjant() {
-        this.sourceFileLists = new LinkedList();
+        this.sourceRC = new LinkedList();
     }
     
     public void setOutput(File value) {
         this.outputFile = value;
     }
     
-    public void addSources(FileList list) {
-        this.sourceFileLists.add(list);
+    public void addFileList(FileList list) {
+        this.sourceRC.add(list);
+    }
+    
+    public void addFileSet(FileSet set) {
+        this.sourceRC.add(set);
+    }
+    
+    public void addPath(Path set) {
+        this.sourceRC.add(set);
     }
     
     public void execute() {
@@ -39,7 +54,7 @@ public class Fjant extends Task {
             throw new BuildException("Output attribute must be set");
         }
         
-        File[] files = findSourceFiles();
+        Resource[] files = findSourceFiles();
         
         if(!updateNeeded(files)) {
             log("None of the files changed, processing skipped.");
@@ -56,14 +71,14 @@ public class Fjant extends Task {
         
         log("Processing " + files.length + " file" + (files.length > 1?"s":"") + ".");
         
-        for(File file : files) {
+        for(Resource res : files) {
             
             BufferedReader in;
             
             try {
-                in = new BufferedReader(new FileReader(file));
-            } catch(FileNotFoundException e) {
-                throw new BuildException("Input file not found");
+                in = new BufferedReader(new InputStreamReader(res.getInputStream()));
+            } catch(IOException e) {
+                throw new BuildException("Error opening input-file");
             }
             
             String line;
@@ -104,30 +119,30 @@ public class Fjant extends Task {
         
     }
     
-    private File[] findSourceFiles() {
+    private Resource[] findSourceFiles() {
         
-        List<File> files = new LinkedList<File>();
+        List<Resource> files = new LinkedList<Resource>();
         
-        for(FileList list : this.sourceFileLists) {
+        for(ResourceCollection rc : this.sourceRC) {
             
-            File dir = list.getDir(getProject());
+            Iterator<Resource> i = rc.iterator();
             
-            for(String included : list.getFiles(getProject())) {
-                files.add(new File(dir, included));
+            while(i.hasNext()) {
+                files.add(i.next());
             }
             
         }
         
-        return files.toArray(new File[files.size()]);
+        return files.toArray(new Resource[files.size()]);
     }
     
-    private boolean updateNeeded(File[] sources) {
+    private boolean updateNeeded(Resource[] sources) {
         
         long lastRun = outputFile.lastModified();
         
-        for(File file : sources) {
+        for(Resource res : sources) {
             
-            long t = file.lastModified();
+            long t = res.getLastModified();
             
             if(t == 0) {
                 // File is absent
