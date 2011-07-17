@@ -1,0 +1,29 @@
+
+div {
+    
+    opacity: .35;
+    
+    border-radius: 8px;
+    box-shadow: inset 2px 2px 8px black;
+    
+    user-select: text;
+    background-size: 128px 64px;
+    
+    transition-delay: 1s;
+    transition-duration: 2s;
+    transition-property: opacity;
+    transition-timing-function: ease;
+    
+    column-count: 4;
+    column-fill: balance;
+    column-gap: 12px;
+    column-rule: 12px;
+    column-span: 2;
+    column-width: auto;
+    
+    background: linear-gradient(top, #369 0%, #CCC 100%);
+    
+    color: rgba(255, 255, 255, .45);
+    background-color: rgba(0, 0, 0, .75);
+    
+}

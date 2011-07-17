@@ -1,1 +1,10 @@
 A CSS Preprocessor for ANT
+
+
+Sample usage:
+    <fjant output="test.css">
+        <sources dir="test">
+            <file name="test1.css" />
+            <file name="test2.css" />
+        </sources>
+    </fjant>
