@@ -21,6 +21,7 @@
     
     <target name="test.list" depends="jar">
         <taskdef name="fjant" classname="com.linusu.${ant.project.name}" classpath="${bin.dir}/${ant.project.name}.jar"/>
+        <touch file="test/test1.css" />
         <fjant output="test.css">
             <filelist dir="test">
                 <file name="test1.css" />
@@ -31,6 +32,7 @@
     
     <target name="test.set" depends="jar">
         <taskdef name="fjant" classname="com.linusu.${ant.project.name}" classpath="${bin.dir}/${ant.project.name}.jar"/>
+        <touch file="test/test1.css" />
         <fjant output="test.css">
             <fileset dir="test" includes="*.css" />
         </fjant>
