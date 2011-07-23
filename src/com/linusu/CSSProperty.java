@@ -11,6 +11,7 @@ public enum CSSProperty {
     
     BACKGROUND_SIZE,
     BACKGROUND_CLIP,
+    BACKGROUND_ORIGIN,
     
     TRANSITION,
     TRANSITION_DURATION,

@@ -87,6 +87,11 @@ public class CSSRule {
                 out("-khtml-", p, v);
                 out("-moz-", p, (v.equals("content-box")?"padding":v.substring(0, v.length() - 4)));
                 break;
+            case BACKGROUND_ORIGIN:
+                out("-webkit-", p, v);
+                out("-khtml-", p, v);
+                out("-moz-", p, v.substring(0, v.length() - 4));
+                break;
             default:
                 
                 Matcher m;

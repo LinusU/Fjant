@@ -9,6 +9,7 @@ div {
     user-select: text;
     background-size: 128px 64px;
     background-clip: content-box;
+    background-origin: content-box;
     
     transition-delay: 1s;
     transition-duration: 2s;
