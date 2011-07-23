@@ -113,7 +113,7 @@ public class CSSRule {
                     
                     out("", p, "#" + m.group(1));
                     out("", p, "-moz-" + m.group(0));
-                    out("", p, "-webkit-gradient(linear, left top, left bottom, color-stop(0%,#" + m.group(1) + "), color-stop(100%,#" + m.group(2) + ")");
+                    out("", p, "-webkit-gradient(linear, left top, left bottom, color-stop(0%,#" + m.group(1) + "), color-stop(100%,#" + m.group(2) + "))");
                     out("", p, "-webkit-" + m.group(0));
                     out("", p, "-o-" + m.group(0));
                     out("", p, "-ms-" + m.group(0));
