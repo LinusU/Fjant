@@ -10,6 +10,7 @@ public enum CSSProperty {
     USER_SELECT,
     
     BACKGROUND_SIZE,
+    BACKGROUND_CLIP,
     
     TRANSITION,
     TRANSITION_DURATION,

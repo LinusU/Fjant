@@ -82,6 +82,11 @@ public class CSSRule {
                 out("-moz-", p, v);
                 out("-o-", p, v);
                 break;
+            case BACKGROUND_CLIP:
+                out("-webkit-", p, v);
+                out("-khtml-", p, v);
+                out("-moz-", p, (v.equals("content-box")?"padding":v.substring(0, p.length() - 4)));
+                break;
             default:
                 
                 Matcher m;
