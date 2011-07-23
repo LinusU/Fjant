@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 
 import java.util.List;
 import java.util.Iterator;
@@ -81,7 +82,9 @@ public class Fjant extends Task {
             }
             
             int state = 0;
+            int comment = 0;
             StringBuilder sb = new StringBuilder();
+            StringBuilder sbc = new StringBuilder();
             CSSRule rule = new CSSRule("");
             String property = "";
             
@@ -95,6 +98,51 @@ public class Fjant extends Task {
                     c = (char) i;
                 } catch(IOException e) {
                     throw new BuildException("Error reading input-file");
+                }
+                
+                switch(comment) {
+                    case 0:
+                        if(c == '/') {
+                            comment = 1;
+                            continue;
+                        }
+                        break;
+                    case 1:
+                        if(c == '*') {
+                            comment = 2;
+                            continue;
+                        } else {
+                            sb.append('/');
+                            comment = 0;
+                        }
+                        break;
+                    case 2:
+                        if(c == '*') {
+                            comment = 3;
+                        } else {
+                            sbc.append(c);
+                        }
+                        continue;
+                    case 3:
+                        if(c == '/') {
+                            comment = 0;
+                            if(state == 0) {
+                                try {
+                                    out.write(("\n/*" + sbc.toString() + "*/\n").getBytes("UTF-8"));
+                                } catch(UnsupportedEncodingException e) {
+                                    throw new BuildException("Error writing to output-file");
+                                } catch(IOException e) {
+                                    throw new BuildException("Error writing to output-file");
+                                }
+                            } else {
+                                rule.add("-fjant-comment", sbc.toString());
+                            }
+                            sbc = new StringBuilder();
+                        } else {
+                            sbc.append('*');
+                            comment = 2;
+                        }
+                        continue;
                 }
                 
                 switch(state) {

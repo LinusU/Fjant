@@ -142,11 +142,15 @@ public class CSSRule {
             
             for(Map.Entry<String, String> entry : output) {
                 out.write((s?" ":"    ").getBytes("UTF-8"));
-                out.write(entry.getKey().getBytes("UTF-8"));
-                out.write(": ".getBytes("UTF-8"));
-                out.write(entry.getValue().getBytes("UTF-8"));
-                s = entry.getKey().startsWith("-");
-                out.write((s?";":";\n").getBytes("UTF-8"));
+                if(entry.getKey().equals("-fjant-comment")) {
+                    out.write(("/*" + entry.getValue() + "*/\n").getBytes("UTF-8"));
+                } else {
+                    out.write(entry.getKey().getBytes("UTF-8"));
+                    out.write(": ".getBytes("UTF-8"));
+                    out.write(entry.getValue().getBytes("UTF-8"));
+                    s = entry.getKey().startsWith("-");
+                    out.write((s?";":";\n").getBytes("UTF-8"));
+                }
             }
             
             out.write("}\n".getBytes("UTF-8"));

@@ -1,6 +1,7 @@
 
 div {
     
+    /* Opacity */
     opacity: .35;
     
     border-radius: 8px;
@@ -11,11 +12,13 @@ div {
     background-clip: content-box;
     background-origin: content-box;
     
+    /* Transition */
     transition-delay: 1s;
     transition-duration: 2s;
     transition-property: opacity;
     transition-timing-function: ease;
     
+    /* Columns */
     column-count: 4;
     column-fill: balance;
     column-gap: 12px;
@@ -25,6 +28,7 @@ div {
     
     background: linear-gradient(top, #369 0%, #CCC 100%);
     
+    /* RGBA */
     color: rgba(255, 255, 255, .45);
     background-color: rgba(0, 0, 0, .75);
     
