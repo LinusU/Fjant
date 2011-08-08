@@ -8,6 +8,8 @@ div {
     box-shadow: inset 2px 2px 8px black;
     
     user-select: text;
+    box-sizing: content-box;
+    
     background-size: 128px 64px;
     background-clip: content-box;
     background-origin: content-box;

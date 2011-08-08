@@ -72,6 +72,11 @@ public class CSSRule {
                 out("-moz-", p, v);
                 out("-o-", p, v);
                 break;
+            case BOX_SIZING:
+                out("-webkit-", p, v);
+                out("-moz-", p, v);
+                out("-ms-", p, v);
+                break;
             case BACKGROUND_SIZE:
             case TRANSITION:
             case TRANSITION_DURATION:

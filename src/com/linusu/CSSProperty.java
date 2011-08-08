@@ -8,6 +8,7 @@ public enum CSSProperty {
     BOX_SHADOW,
     
     USER_SELECT,
+    BOX_SIZING,
     
     BACKGROUND_SIZE,
     BACKGROUND_CLIP,
