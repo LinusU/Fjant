@@ -1,6 +1,7 @@
 package com.linusu;
 
 import com.linusu.CSSRule;
+import com.linusu.Indentation;
 
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.BuildException;
@@ -28,6 +29,8 @@ public class Fjant extends Task {
     private File outputFile;
     private List<ResourceCollection> sourceRC;
     
+    private FileOutputStream outputStream;
+    
     public Fjant() {
         this.sourceRC = new LinkedList();
     }
@@ -48,7 +51,7 @@ public class Fjant extends Task {
         this.sourceRC.add(set);
     }
     
-    public void execute() {
+    public void execute() throws BuildException {
         
         if(this.outputFile == null) {
             throw new BuildException("Output attribute must be set");
@@ -61,10 +64,8 @@ public class Fjant extends Task {
             return ;
         }
         
-        FileOutputStream out;
-        
         try {
-            out = new FileOutputStream(this.outputFile);
+            outputStream = new FileOutputStream(this.outputFile);
         } catch(FileNotFoundException e) {
             throw new BuildException("Output file not found");
         }
@@ -86,6 +87,7 @@ public class Fjant extends Task {
             StringBuilder sb = new StringBuilder();
             StringBuilder sbc = new StringBuilder();
             CSSRule rule = new CSSRule("");
+            Indentation indent = new Indentation();
             String property = "";
             
             char c = 0;
@@ -127,13 +129,7 @@ public class Fjant extends Task {
                         if(c == '/') {
                             comment = 0;
                             if(state == 0) {
-                                try {
-                                    out.write(("\n/*" + sbc.toString() + "*/\n").getBytes("UTF-8"));
-                                } catch(UnsupportedEncodingException e) {
-                                    throw new BuildException("Error writing to output-file");
-                                } catch(IOException e) {
-                                    throw new BuildException("Error writing to output-file");
-                                }
+                            	writeOut("\n/*" + sbc.toString() + "*/\n");
                             } else {
                                 rule.add("-fjant-comment", sbc.toString());
                             }
@@ -151,6 +147,20 @@ public class Fjant extends Task {
                             state = 1;
                             rule = new CSSRule(sb.toString());
                             sb = new StringBuilder();
+                        } else if(c == '@') {
+                        	if(!sb.toString().trim().equals("")) {
+                        		throw new BuildException("Possibly malformed CSS");
+                        	}
+                        	state = 3;
+                        	sb = new StringBuilder();
+                        } else if(c == '}') {
+                        	if(indent.value() == 0) {
+                        		sb.append(c);
+                        	} else {
+                        		indent.decrease();
+                        		writeOut("\n}\n");
+                        		sb = new StringBuilder();
+                        	}
                         } else {
                             sb.append(c);
                         }
@@ -159,7 +169,7 @@ public class Fjant extends Task {
                         if(c == '}') {
                             state = 0;
                             rule.process();
-                            rule.print(out);
+                            rule.print(outputStream, indent);
                             sb = new StringBuilder();
                         } else if(c == ':') {
                             state = 2;
@@ -178,12 +188,22 @@ public class Fjant extends Task {
                             state = 0;
                             rule.add(property, sb.toString());
                             rule.process();
-                            rule.print(out);
+                            rule.print(outputStream, indent);
                             sb = new StringBuilder();
                         } else {
                             sb.append(c);
                         }
                         break;
+                    case 3:
+                    	if(c == '{' || c == ';') {
+                    		state = 0;
+                    		writeOut("\n@" + sb.toString() + c + "\n");
+                    		if(c == '{') { indent.increase(); }
+                            sb = new StringBuilder();
+                    	} else {
+	                    	sb.append(c);
+                    	}
+                    	break;
                 }
                 
                 
@@ -191,6 +211,16 @@ public class Fjant extends Task {
             
         }
         
+    }
+    
+    private void writeOut(String str) throws BuildException {
+    	try {
+            outputStream.write(str.getBytes("UTF-8"));
+        } catch(UnsupportedEncodingException e) {
+            throw new BuildException("Error writing to output-file");
+        } catch(IOException e) {
+            throw new BuildException("Error writing to output-file");
+        }
     }
     
     private Resource[] findSourceFiles() {

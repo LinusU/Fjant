@@ -3,6 +3,8 @@ package com.linusu;
 import com.linusu.CSSProperty;
 import com.linusu.CSSProperty.*;
 
+import com.linusu.Indentation;
+
 import java.util.Map;
 import java.util.List;
 import java.util.LinkedList;
@@ -136,17 +138,17 @@ public class CSSRule {
         
     }
     
-    public void print(FileOutputStream out) {
+    public void print(FileOutputStream out, Indentation indent) {
         try {
             
             boolean s = false;
             
-            out.write("\n".getBytes("UTF-8"));
-            out.write(selector.getBytes("UTF-8"));
-            out.write(" {\n".getBytes("UTF-8"));
+            out.write(("\n" + indent.toString() + selector + " {\n").getBytes("UTF-8"));
+            
+            indent.increase();
             
             for(Map.Entry<String, String> entry : output) {
-                out.write((s?" ":"    ").getBytes("UTF-8"));
+                out.write((s?" ":indent.toString()).getBytes("UTF-8"));
                 if(entry.getKey().equals("-fjant-comment")) {
                     out.write(("/*" + entry.getValue() + "*/\n").getBytes("UTF-8"));
                 } else {
@@ -158,7 +160,9 @@ public class CSSRule {
                 }
             }
             
-            out.write("}\n".getBytes("UTF-8"));
+            indent.decrease();
+            
+            out.write((indent.toString() + "}\n").getBytes("UTF-8"));
             
         } catch(UnsupportedEncodingException e) {
             // FIXME
