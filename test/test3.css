@@ -1,0 +1,26 @@
+
+@import "test2.css";
+
+@media all {
+	
+	body {
+		background: lime;
+	}
+	
+	input {
+		border-radius: 4px;
+	}
+	
+}
+
+@media screen {
+	
+	input {
+		background: lime;
+	}
+	
+	body {
+		border-radius: 4px;
+	}
+	
+}

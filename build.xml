@@ -26,6 +26,7 @@
             <filelist dir="test">
                 <file name="test1.css" />
                 <file name="test2.css" />
+                <file name="test3.css" />
             </filelist>
         </fjant>
     </target>
